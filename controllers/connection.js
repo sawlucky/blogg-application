@@ -10,7 +10,9 @@ const HandleSignin = async (req, res) => {
       _id: response.id,
     };
     const token = genreatToken(payload);
-    res.status(200).send({ response, token });
+    res.cookie("token", token);
+    res.status(200).redirect("/");
+    //   send({ response, token })
   } catch (err) {
     res.status(500).send({ error: "Internal server error" });
   }
@@ -29,15 +31,15 @@ const HandleLogin = async (req, res) => {
     };
     const token = genreatToken(payload);
     res.cookie("token", token);
-    res.status(200).json({ user, token });
+    res.status(200).redirect("/");
+    //   json({ user, token });
   } catch (err) {
     res.status(500).send({ error: "Internal server error" });
   }
 };
 
-
 const HandlePassword = async (req, res) => {
-//   console.log(req.cookies.token);
+  //   console.log(req.cookies.token);
   const userid = req.user;
   console.log(userid);
   const { oldPassword, newPassword } = req.body;
@@ -65,4 +67,24 @@ const HandlePassword = async (req, res) => {
     // return res.status(500).send({ error: "Internal server error" });
   }
 };
-module.exports = { HandleSignin, HandleLogin , HandlePassword};
+
+const HandleDelteCookie = async (req, res) => {
+  const userid = req.user;
+
+  try {
+    const user = await UserSchema.findById(userid);
+    if (!user) {
+      return res.status(404).redirect("/signup");
+    }
+    res.clearCookie("token");
+    res.status(200).redirect("/");
+  } catch (err) {
+    return res.status(500).send({ error: "Internal server error" });
+  }
+};
+module.exports = {
+  HandleSignin,
+  HandleLogin,
+  HandlePassword,
+  HandleDelteCookie,
+};

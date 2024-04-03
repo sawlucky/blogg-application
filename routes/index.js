@@ -8,6 +8,7 @@ const {
   HandleSignin,
   HandleLogin,
   HandlePassword,
+  HandleDelteCookie,
 } = require("../controllers/connection");
 router.use(Logrequest);
 router.get("/signup", (req, res) => {
@@ -18,9 +19,10 @@ router.get("/forgot", (req, res) => {
 });
 router.post("/signin", HandleSignin);
 router.post("/login", HandleLogin);
-router.put("/password", jwtAuthMiddleware, HandlePassword);
+router.post("/password", jwtAuthMiddleware, HandlePassword);
 router.get("/simple", jwtAuthMiddleware, (req, res) => {
   res.render("simple");
 });
+router.get("/delcookie", jwtAuthMiddleware, HandleDelteCookie);
 
 module.exports = router;
