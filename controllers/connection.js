@@ -34,9 +34,12 @@ const HandleLogin = async (req, res) => {
     res.status(500).send({ error: "Internal server error" });
   }
 };
+
+
 const HandlePassword = async (req, res) => {
-  console.log(req.cookies.token);
+//   console.log(req.cookies.token);
   const userid = req.user;
+  console.log(userid);
   const { oldPassword, newPassword } = req.body;
   try {
     console.log("yaha enter hua");
@@ -47,19 +50,19 @@ const HandlePassword = async (req, res) => {
     }
 
     const user = await UserSchema.findById(userid);
+    console.log(user);
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
-      console.log("cant find user", user.password);
       return res.status(403).send({ error: "wrong old password" });
     }
 
     user.password = newPassword;
     console.log(newPassword);
     await user.save();
-    res.status(200).send({ message: "Password changed successfully" });
+    res.status(200).redirect("/");
   } catch (err) {
     console.log("err ho gya");
     return res.status(500).send({ error: "Internal server error" });
-    return res.status(500).send({ error: "Internal server error" });
+    // return res.status(500).send({ error: "Internal server error" });
   }
 };
-module.exports = { HandleSignin, HandleLogin, HandlePassword };
+module.exports = { HandleSignin, HandleLogin , HandlePassword};

@@ -18,6 +18,9 @@ router.get("/forgot", (req, res) => {
 });
 router.post("/signin", HandleSignin);
 router.post("/login", HandleLogin);
-router.post("/password", HandlePassword);
+router.put("/password", jwtAuthMiddleware, HandlePassword);
+router.get("/simple", jwtAuthMiddleware, (req, res) => {
+  res.render("simple");
+});
 
 module.exports = router;
